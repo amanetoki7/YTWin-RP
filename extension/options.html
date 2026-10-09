@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>YTWin-RP Connector</title>
+  <style>
+    body { font-family: system-ui, sans-serif; font-size: 14px; margin: 16px; min-width: 280px; }
+    label { display: block; margin-bottom: 6px; }
+    input { width: 100px; padding: 4px 6px; }
+    button { margin-left: 8px; padding: 4px 12px; }
+    #status { margin-top: 10px; color: #555; }
+  </style>
+</head>
+<body>
+  <label for="port">YTWin-RP port (default 48271)</label>
+  <input id="port" type="number" min="1024" max="65535">
+  <button id="save">Save</button>
+  <div id="status"></div>
+  <script src="options.js"></script>
+</body>
+</html>
