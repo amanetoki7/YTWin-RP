@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="Settings_TimeUnitSeconds" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="Settings_General_SectionTitle" xml:space="preserve">
+    <value>一般</value>
+  </data>
+  <data name="Settings_General_RunOnWindowsStartup" xml:space="preserve">
+    <value>Windows起動時に実行</value>
+  </data>
+  <data name="Settings_General_UpdateOnStartup" xml:space="preserve">
+    <value>起動時にアップデートを確認</value>
+  </data>
+  <data name="Settings_General_Language" xml:space="preserve">
+    <value>言語</value>
+  </data>
+  <data name="Settings_General_Language_Description" xml:space="preserve">
+    <value>言語を変更した後は、完全に適用するためにアプリを再起動してください。</value>
+  </data>
+  <data name="Settings_General_Language_System" xml:space="preserve">
+    <value>システム既定 (System default)</value>
+  </data>
+  <data name="Settings_General_Language_English" xml:space="preserve">
+    <value>英語 (English)</value>
+  </data>
+  <data name="Settings_General_Language_German" xml:space="preserve">
+    <value>ドイツ語 (Deutsch)</value>
+  </data>
+  <data name="Settings_General_Language_Turkish" xml:space="preserve">
+    <value>トルコ語 (Türkçe)</value>
+  </data>
+  <data name="Settings_General_Language_Korean" xml:space="preserve">
+    <value>韓国語 (한국어)</value>
+  </data>
+  <data name="Settings_General_Language_Japanese" xml:space="preserve">
+    <value>日本語 (日本語)</value>
+  </data>
+  <data name="Settings_General_Language_Russian" xml:space="preserve">
+    <value>ロシア語 (Русский)</value>
+  </data>
+  <data name="Settings_General_Language_Spanish" xml:space="preserve">
+    <value>スペイン語－スペイン（Español de España）</value>
+  </data>
+  <data name="Settings_General_Language_Latam" xml:space="preserve">
+    <value>スペイン語－ラテンアメリカ（Español de Latinoamérica）</value>
+  </data>
+  <data name="Settings_Detection_SectionTitle" xml:space="preserve">
+    <value>YouTube の検出</value>
+  </data>
+  <data name="Settings_Detection_SectionTitleShort" xml:space="preserve">
+    <value>検出</value>
+  </data>
+  <data name="Settings_Detection_Description" xml:space="preserve">
+    <value>YTWin-RP はブラウザーが Windows のメディアコントロールに渡す再生情報を読み取り、ブラウザーのウィンドウタイトルまたは YouTube 検索で YouTube であることを確認し、YouTube Music に同じ動画があるかを問い合わせて音楽かどうかを判定します。ブラウザー拡張機能は不要です。</value>
+  </data>
+  <data name="Settings_Detection_Status_Title" xml:space="preserve">
+    <value>現在の検出状況</value>
+  </data>
+  <data name="Settings_Detection_Status_Nothing" xml:space="preserve">
+    <value>YouTube で再生中のものはありません。</value>
+  </data>
+  <data name="Settings_Detection_Status_Music" xml:space="preserve">
+    <value>音楽</value>
+  </data>
+  <data name="Settings_Detection_Status_Video" xml:space="preserve">
+    <value>動画</value>
+  </data>
+  <data name="Settings_Detection_Status_Unknown" xml:space="preserve">
+    <value>識別中…</value>
+  </data>
+  <data name="Settings_Detection_Status_SourceMediaSession" xml:space="preserve">
+    <value>Windows メディアコントロール経由</value>
+  </data>
+  <data name="Settings_Detection_Status_SourceExtension" xml:space="preserve">
+    <value>ブラウザー拡張機能経由</value>
+  </data>
+  <data name="Settings_Detection_Status_Unconfirmed" xml:space="preserve">
+    <value>YouTube と未確認</value>
+  </data>
+  <data name="Settings_Detection_ShowVideos" xml:space="preserve">
+    <value>動画のリッチプレゼンスを表示</value>
+  </data>
+  <data name="Settings_Detection_ShowMusic" xml:space="preserve">
+    <value>音楽のリッチプレゼンスを表示</value>
+  </data>
+  <data name="Settings_Detection_DetectMusic" xml:space="preserve">
+    <value>YouTube Music を使って音楽を判定</value>
+  </data>
+  <data name="Settings_Detection_DetectMusic_Description" xml:space="preserve">
+    <value>YouTube Music が曲またはミュージックビデオとして扱う動画は「〜を再生中」として曲名・アーティスト・アルバムアートで表示します。オフにするとすべて動画として扱います。</value>
+  </data>
+  <data name="Settings_Detection_RequireWindow" xml:space="preserve">
+    <value>YouTube のタブが前面にあるときだけ追跡する</value>
+  </data>
+  <data name="Settings_Detection_RequireWindow_Description" xml:space="preserve">
+    <value>YouTube のタブが見えていないときに、同じブラウザー内の他の Web プレイヤー（Spotify Web など）を YouTube と誤認するのを防ぎます。バックグラウンドのタブはブラウザー拡張機能経由でのみ追跡されます。</value>
+  </data>
+  <data name="Settings_Detection_Extension_SectionTitle" xml:space="preserve">
+    <value>ブラウザー拡張機能（任意）</value>
+  </data>
+  <data name="Settings_Detection_Extension_Description" xml:space="preserve">
+    <value>任意の拡張機能は、YouTube タブの正確な動画 ID と再生位置を 127.0.0.1 経由でこのアプリに送ります。限定公開の動画、バックグラウンドのタブ、より正確なタイムスタンプが必要な場合にのみ使います。「extension」フォルダーをブラウザーに「パッケージ化されていない拡張機能」として読み込んでください。</value>
+  </data>
+  <data name="Settings_Detection_Extension_Port" xml:space="preserve">
+    <value>ポート</value>
+  </data>
+  <data name="Settings_Detection_Extension_Status_Listening" xml:space="preserve">
+    <value>127.0.0.1:{0} で待機中</value>
+  </data>
+  <data name="Settings_Detection_Extension_Status_NotListening" xml:space="preserve">
+    <value>待機していません</value>
+  </data>
+  <data name="Settings_Detection_Extension_Status_LastReport" xml:space="preserve">
+    <value>拡張機能からの最終受信: {0} 秒前</value>
+  </data>
+  <data name="Settings_Detection_Extension_Status_NoReport" xml:space="preserve">
+    <value>拡張機能からの受信はまだありません</value>
+  </data>
+  <data name="Settings_Detection_Extension_OpenFolder" xml:space="preserve">
+    <value>拡張機能のフォルダーを開く</value>
+  </data>
+  <data name="Settings_Discord_SectionTitle" xml:space="preserve">
+    <value>Discord リッチプレゼンス</value>
+  </data>
+  <data name="Settings_Discord_SectionTitleShort" xml:space="preserve">
+    <value>Discord RP</value>
+  </data>
+  <data name="Settings_Discord_EnableRP" xml:space="preserve">
+    <value>Discord リッチプレゼンスを有効化</value>
+  </data>
+  <data name="Settings_Discord_ClientID_SectionTitle" xml:space="preserve">
+    <value>Discord アプリケーション</value>
+  </data>
+  <data name="Settings_Discord_ClientID_Description" xml:space="preserve">
+    <value>このビルドには組み込みの Discord アプリケーションがありません。Discord Developer Portal で「YouTube」という名前のアプリケーションを作成し、その Application ID をここに貼り付けてください。アプリケーション名が Discord 上で「〜を視聴中」「〜を再生中」として表示されます。曲用に 2 つ目のアプリケーション（例:「YouTube Music」）も指定できます。</value>
+  </data>
+  <data name="Settings_Discord_ClientID" xml:space="preserve">
+    <value>Application ID</value>
+  </data>
+  <data name="Settings_Discord_ClientIDMusic" xml:space="preserve">
+    <value>音楽用の Application ID（任意）</value>
+  </data>
+  <data name="Settings_Discord_ClientID_Invalid" xml:space="preserve">
+    <value>Application ID は 17〜20 桁の数字です。</value>
+  </data>
+  <data name="Settings_Discord_OpenDeveloperPortal" xml:space="preserve">
+    <value>Discord Developer Portal を開く</value>
+  </data>
+  <data name="Settings_Discord_ShowAlbumArt" xml:space="preserve">
+    <value>サムネイル／アルバムアートを表示</value>
+  </data>
+  <data name="Settings_Discord_ShowAlbumTitle" xml:space="preserve">
+    <value>画像にカーソルを合わせたときにアルバム名またはチャンネル名を表示</value>
+  </data>
+  <data name="Settings_Discord_ShowWhenPaused" xml:space="preserve">
+    <value>一時停止中でも表示</value>
+  </data>
+  <data name="Settings_Discord_ShowServiceIcon" xml:space="preserve">
+    <value>YouTube アイコンを表示</value>
+  </data>
+  <data name="Settings_Discord_ShowServiceIcon_Description" xml:space="preserve">
+    <value>リッチプレゼンス表示で、サムネイルの横に YouTube または YouTube Music のアイコンを表示します。</value>
+  </data>
+  <data name="Settings_Discord_UserStatusDisplay" xml:space="preserve">
+    <value>Discord ステータスの表示内容</value>
+  </data>
+  <data name="Settings_Discord_UserStatusDisplay_Artist" xml:space="preserve">
+    <value>チャンネル名／アーティスト名</value>
+  </data>
+  <data name="Settings_Discord_UserStatusDisplay_AppName" xml:space="preserve">
+    <value>アプリケーション名</value>
+  </data>
+  <data name="Settings_Discord_UserStatusDisplay_SongName" xml:space="preserve">
+    <value>動画／曲のタイトル</value>
+  </data>
+  <data name="Settings_Discord_ClientChoice" xml:space="preserve">
+    <value>リッチプレゼンスの送信先</value>
+  </data>
+  <data name="Settings_Discord_ClientChoice_Description" xml:space="preserve">
+    <value>複数の Discord アプリ（Stable と Canary など）を起動している場合、どちらにリッチプレゼンスを送るかを選びます。1 つしか使わない場合は「自動」のままにしてください。</value>
+  </data>
+  <data name="Settings_Discord_ClientChoice_Auto" xml:space="preserve">
+    <value>自動（起動中の任意のクライアント）</value>
+  </data>
+  <data name="Settings_Discord_ClientChoice_Stable" xml:space="preserve">
+    <value>Discord（Stable）</value>
+  </data>
+  <data name="Settings_Discord_ClientChoice_PTB" xml:space="preserve">
+    <value>Discord PTB</value>
+  </data>
+  <data name="Settings_Discord_ClientChoice_Canary" xml:space="preserve">
+    <value>Discord Canary</value>
+  </data>
+  <data name="Settings_Discord_Lyrics_SectionTitle" xml:space="preserve">
+    <value>同期歌詞（実験機能）</value>
+  </data>
+  <data name="Settings_Discord_Lyrics_EnableLyrics" xml:space="preserve">
+    <value>リッチプレゼンスに歌詞を表示（音楽のみ）</value>
+  </data>
+  <data name="Settings_Discord_Lyrics_ShowDuringBreak" xml:space="preserve">
+    <value>間奏中も歌詞を維持</value>
+  </data>
+  <data name="Settings_Discord_Lyrics_ShowDuringBreak_Description" xml:space="preserve">
+    <value>音楽の区切りでも、直前の歌詞を表示し続けます。</value>
+  </data>
+  <data name="Settings_Discord_Lyrics_OpenCache" xml:space="preserve">
+    <value>歌詞キャッシュを開く</value>
+  </data>
+  <data name="Settings_Discord_Lyrics_ClearCache" xml:space="preserve">
+    <value>歌詞キャッシュを削除</value>
+  </data>
+  <data name="Settings_Scrobbling_SectionTitle" xml:space="preserve">
+    <value>スクロブリング</value>
+  </data>
+  <data name="Settings_Scrobbling_SectionTitleShort" xml:space="preserve">
+    <value>スクロブリング</value>
+  </data>
+  <data name="Settings_Scrobbling_Description" xml:space="preserve">
+    <value>以下で有効にしない限り、音楽と判定された動画のみスクロブルします。曲名・アーティスト・アルバムは可能な限り YouTube Music の情報を使います。</value>
+  </data>
+  <data name="Settings_Scrobbling_ScrobbleVideos" xml:space="preserve">
+    <value>音楽ではない動画もスクロブルする</value>
+  </data>
+  <data name="Settings_Scrobbling_CleanTitles" xml:space="preserve">
+    <value>動画タイトルを整形</value>
+  </data>
+  <data name="Settings_Scrobbling_CleanTitles_Description" xml:space="preserve">
+    <value>YouTube Music から曲情報が得られない場合に、「(Official Video)」などのタグを取り除き、「アーティスト - 曲名」を分割します。</value>
+  </data>
+  <data name="Settings_Scrobbling_ScrobblePrimaryArtist" xml:space="preserve">
+    <value>最初のアーティストのみスクロブル</value>
+  </data>
+  <data name="Settings_Scrobbling_ScrobbleTime" xml:space="preserve">
+    <value>最大スクロブル待機時間:</value>
+  </data>
+  <data name="Settings_Scrobbling_ScrobbleTime_Description" xml:space="preserve">
+    <value>この時間が経過した時点で、まだスクロブルされていない曲をスクロブルします。</value>
+  </data>
+  <data name="Settings_Scrobbling_LastFM_SectionTitle" xml:space="preserve">
+    <value>Last.FM</value>
+  </data>
+  <data name="Settings_Scrobbling_LastFM_ApiKey" xml:space="preserve">
+    <value>APIキー</value>
+  </data>
+  <data name="Settings_Scrobbling_LastFM_ApiSecret" xml:space="preserve">
+    <value>APIシークレット</value>
+  </data>
+  <data name="Settings_Scrobbling_LastFM_Username" xml:space="preserve">
+    <value>ユーザー名</value>
+  </data>
+  <data name="Settings_Scrobbling_LastFM_Password" xml:space="preserve">
+    <value>パスワード</value>
+  </data>
+  <data name="Settings_Scrobbling_LastFM_Enable" xml:space="preserve">
+    <value>Last.FM スクロブリングを有効化</value>
+  </data>
+  <data name="Settings_Scrobbling_LastFM_SaveCredentials" xml:space="preserve">
+    <value>認証情報を保存</value>
+  </data>
+  <data name="Settings_Scrobbling_ListenBrainz_SectionTitle" xml:space="preserve">
+    <value>ListenBrainz</value>
+  </data>
+  <data name="Settings_Scrobbling_ListenBrainz_UserToken" xml:space="preserve">
+    <value>ユーザートークン</value>
+  </data>
+  <data name="Settings_Scrobbling_ListenBrainz_Enable" xml:space="preserve">
+    <value>ListenBrainz スクロブリングを有効化</value>
+  </data>
+  <data name="Message_ClearLyricCache" xml:space="preserve">
+    <value>保存された歌詞をすべて削除しますか？</value>
+  </data>
+  <data name="Message_ClearLyricCache_Title" xml:space="preserve">
+    <value>キャッシュした歌詞を削除</value>
+  </data>
+  <data name="Message_ClearedLyricCache" xml:space="preserve">
+    <value>保存された歌詞をすべて削除しました。</value>
+  </data>
+  <data name="Message_ClearedLyricCache_Title" xml:space="preserve">
+    <value>歌詞を削除しました</value>
+  </data>
+  <data name="Message_ClearLyricCache_Fail" xml:space="preserve">
+    <value>歌詞を削除できませんでした: </value>
+  </data>
+  <data name="Message_ClearLyricCache_FailNotFound" xml:space="preserve">
+    <value>保存された歌詞が見つかりません。</value>
+  </data>
+  <data name="Message_Error" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="Message_Information" xml:space="preserve">
+    <value>情報</value>
+  </data>
+  <data name="Message_LastFM_Authentication_Title" xml:space="preserve">
+    <value>Last.FM 認証</value>
+  </data>
+  <data name="Message_LastFM_Authentication_Fail" xml:space="preserve">
+    <value>Last.FM の認証情報を確認できませんでした。ユーザー名とパスワードが正しいこと、およびアカウントがロックされていないことを確認してください。</value>
+  </data>
+  <data name="Message_LastFM_Authentication_Success" xml:space="preserve">
+    <value>Last.FM の認証情報を確認しました。</value>
+  </data>
+  <data name="Message_ListenBrainz_Authentication_Title" xml:space="preserve">
+    <value>ListenBrainz 認証</value>
+  </data>
+  <data name="Message_ListenBrainz_Authentication_Fail" xml:space="preserve">
+    <value>ListenBrainz の認証情報を確認できませんでした。ユーザートークンが正しいことを確認してください。</value>
+  </data>
+  <data name="Message_ListenBrainz_Authentication_Success" xml:space="preserve">
+    <value>ListenBrainz の認証情報を確認しました。</value>
+  </data>
+  <data name="Message_AppUpdate_Title" xml:space="preserve">
+    <value>新しいアップデートがあります</value>
+  </data>
+  <data name="Message_AppUpdate" xml:space="preserve">
+    <value>YTWin-RP の新しいアップデートがあります。リリースページを開きますか？</value>
+  </data>
+  <data name="Message_RestartRequired_Title" xml:space="preserve">
+    <value>再起動が必要です</value>
+  </data>
+  <data name="Message_RestartRequired_Content" xml:space="preserve">
+    <value>言語変更を適用するために今すぐ再起動しますか？</value>
+  </data>
+  <data name="Message_DiscordClientIdMissing_Title" xml:space="preserve">
+    <value>Discord Application ID が必要です</value>
+  </data>
+  <data name="Message_DiscordClientIdMissing" xml:space="preserve">
+    <value>このビルドには組み込みの Discord アプリケーションがありません。リッチプレゼンスを表示するには、設定画面（トレイアイコンをダブルクリック）で Application ID を入力してください。</value>
+  </data>
+  <data name="Message_Yes" xml:space="preserve">
+    <value>はい</value>
+  </data>
+  <data name="Message_No" xml:space="preserve">
+    <value>いいえ</value>
+  </data>
+  <data name="DiscordButton_WatchOnYouTube" xml:space="preserve">
+    <value>YouTube で見る</value>
+  </data>
+  <data name="DiscordButton_ListenOnYouTubeMusic" xml:space="preserve">
+    <value>YouTube Music で聴く</value>
+  </data>
+  <data name="DiscordButton_ViewArtist" xml:space="preserve">
+    <value>チャンネルを見る</value>
+  </data>
+  <data name="Presence_Paused" xml:space="preserve">
+    <value>一時停止中</value>
+  </data>
+  <data name="Presence_YouTube" xml:space="preserve">
+    <value>YouTube</value>
+  </data>
+  <data name="Presence_YouTubeMusic" xml:space="preserve">
+    <value>YouTube Music</value>
+  </data>
+  <data name="Taskbar_Settings_Title" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="Taskbar_Exit_Title" xml:space="preserve">
+    <value>終了</value>
+  </data>
+</root>

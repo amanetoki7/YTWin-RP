@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "YTWin-RP Connector",
+  "version": "1.0.0",
+  "description": "Optional helper for YTWin-RP: sends the YouTube / YouTube Music video that is playing in this browser to the YTWin-RP app on this PC (127.0.0.1 only).",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": ["storage"],
+  "host_permissions": ["http://127.0.0.1/*"],
+  "background": {
+    "service_worker": "background.js",
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*", "https://music.youtube.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ytwin-rp-connector@amanetoki7.github.io",
+      "strict_min_version": "121.0"
+    }
+  }
+}

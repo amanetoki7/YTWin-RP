@@ -1,57 +1,62 @@
-# AMWin-RP 
-![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/downloads-pre/PKBeam/AMWin-RP/total) ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/downloads-pre/PKBeam/AMWin-RP/latest/total) &nbsp; ([English](README.md) | [한국어](README-KO.md) | [Russian](README-RU.md) | [Español de Latinoamérica](README-ES_419.md) | [Español de España](README-ES.md) | [Deutsch](README-DE.md))
+# YTWin-RP
+([English](README.md))
 
-Apple MusicのネイティブWindowsアプリ向けのDiscord Rich Presenceクライアントです。
-Last.FMおよびListenBrainzでのスクロブル（再生履歴の保存）もサポートしています。
+**ブラウザーで再生している YouTube / YouTube Music** を Discord のリッチプレゼンスに表示する Windows 用クライアントです。  
+動画は「〜を視聴中」、音楽は「〜を再生中」（曲名・アーティスト・アルバムアート付き）として表示し、音楽は Last.FM / ListenBrainz へのスクロブルもできます。
 
-<image width=450 src="https://github.com/user-attachments/assets/df5d6a83-4630-4384-b521-bc80c286a499" />
-&nbsp; &nbsp; 
-<image src=https://github.com/user-attachments/assets/ea63ddf1-d822-4ffd-be9d-24e13701fce9 width=300 />
+YTWin-RP は [AMWin-RP](https://github.com/PKBeam/AMWin-RP)（Apple Music 用）のフォークを YouTube 向けに作り直したものです。
+
+## 仕組み（ブラウザー拡張機能は不要）
+
+1. ブラウザーは再生中のメディア情報を Windows のメディアコントロール（音量オーバーレイに出るもの）に渡しています。YTWin-RP はそこからタイトル・チャンネル名・再生/一時停止・再生位置を読み取ります。
+2. それが YouTube であることを、ブラウザーのウィンドウタイトル（`動画タイトル - YouTube - Google Chrome`）で確認します。バックグラウンドのタブの場合は、タイトルとチャンネル名で YouTube を検索して確認します。この検索で動画 ID も分かるので、サムネイルと「YouTube で見る」ボタンが付きます。
+3. **動画か音楽か？** 同じ動画 ID を YouTube Music に問い合わせます。YouTube Music はカタログ内の動画に種別を付けており（`MUSIC_VIDEO_TYPE_ATV` = 自動生成の曲、`OMV` = 公式ミュージックビデオ、`UGC` = 音楽カテゴリの一般投稿）、カタログ外の動画には種別が付きません。種別が付いていれば音楽、なければ動画として扱います。音楽の場合は曲名・アーティスト・アルバム名・正方形のアルバムアートも YouTube Music から取得します。
+
+Chrome / Edge / Firefox / Brave / Vivaldi / Opera と、インストールした YouTube PWA を認識します。それ以外のアプリ（Spotify デスクトップ版など）のメディア情報は無視します。
+
+### 任意：ブラウザー拡張機能
+
+[`extension`](extension/) フォルダーの拡張機能（パッケージ化されていない拡張機能として読み込み）は、正確な動画 ID と再生位置を `127.0.0.1` 経由でアプリに送ります。必要なのは、限定公開の動画、検索で特定できないバックグラウンドのタブ、より正確なタイムスタンプが欲しい場合だけです。詳細は [extension/README.md](extension/README.md) を参照してください。
 
 ## インストール
-AMWin-RPは **Windows 11 24H2以降** を必要とします。
+YTWin-RP には **Windows 11 24H2 以降** と Discord のデスクトップクライアントが必要です。
 
-ビルド済みファイルは[こちら](https://github.com/PKBeam/AMWin-RP/releases)で見つけることができます。
+ビルド済みファイルは [こちら](https://github.com/amanetoki7/YTWin-RP/releases)。x64 / ARM64 を選び、`NoRuntime` 版を使う場合は [.NET 10 デスクトップランタイム](https://dotnet.microsoft.com/ja-jp/download/dotnet/10.0) が必要です。
 
-### どのリリースを使えばいいですか？
-お使いのPCのプロセッサに合わせて **x64** または **ARM64** を選択してください。
-その後、標準のリリースか、`NoRuntime` とマークされたリリースのどちらかを選択します。
+### Discord アプリケーション
 
-迷った場合は、ラベルのない標準リリース（`NoRuntime` ではない方）を使用してください。
-このバージョンは、実行に必要な .NET のコンポーネントが同梱されているためファイルサイズは大きくなりますが、そのまま動作します。
+Discord は「〜を視聴中」「〜を再生中」の「〜」部分に、プレゼンスを設定した**アプリケーションの名前**（YouTube / YouTube Music）を表示します。両方のアプリケーションは YTWin-RP に組み込まれているため、利用者側の設定は不要です。サムネイルは URL で送り、その右下の小アイコンには Developer Portal で設定したアプリケーションのアイコンを使います（`youtube` / `youtubemusic` / `pause` という名前の Rich Presence アセットをアップロードするとそちらが優先されます）。組み込み ID のないビルドでは、代わりに設定画面に Application ID の入力欄が表示されます。
 
-`NoRuntime` リリースはサイズが非常に小さいですが、[.NET 10 デスクトップランタイム](https://dotnet.microsoft.com/ja-jp/download/dotnet/10.0)がインストールされている必要があります。
-ランタイムが未インストールの状態でアプリを起動すると、インストールを促すダイアログが表示されます。
+## 使い方
+- `.exe` を起動するとシステムトレイに常駐します。アイコンをダブルクリックで設定、右クリック → 終了で終了します。
+- ブラウザーで youtube.com または music.youtube.com を再生すると、数秒後にリッチプレゼンスが表示されます（既定では再生中のみ。「一時停止中でも表示」は設定で変更できます）。
+- 設定の「検出」ページで、今なにをどう検出しているかを確認できます。
 
-## 使用方法
-AMWin-RPを使用するには、[Microsoft Store版](https://apps.microsoft.com/detail/9PFHDD62MXS1)のApple Musicが必要です。
-
-- `.exe` を開いてアプリを起動します。
-- AMWin-RPはバックグラウンドで実行され、システムトレイに最小化されます。
-- トレイアイコンをダブルクリックすると、設定画面が表示されます。
-    - ここから、Windows起動時の自動実行、スクロブル、曲検出などの設定を行えます。
-- アプリを終了するには、トレイアイコンを右クリックして「Exit」を選択します。
-- デフォルトでは、Rich Presenceを表示するために、Apple Musicアプリが開いており、音楽が再生中である（一時停止していない）必要があります。
-
-**注意**: 仮想デスクトップを使用している場合、AMWin-RPとApple Musicは**同じデスクトップ**に配置されている必要があります。これは、Apple Musicクライアントから情報を取得するために使用しているUI Automationライブラリの技術的な制限によるものです。
+知っておくと便利な設定：
+- **YouTube Music を使って音楽を判定** – オフにするとすべて動画として表示します。
+- **YouTube のタブが前面にあるときだけ追跡する** – 同じブラウザーで他の Web プレイヤー（Spotify Web など）も使う人向けの厳格モード。
+- **動画／音楽のリッチプレゼンスを表示** – どちらかだけ表示することもできます。
 
 ## スクロブル
-このスクロブラーの実装はオフラインでのスクロブルをサポートしていません。インターネットに接続されていない状態で聴いた曲の履歴は保存されませんのでご注意ください。
+既定では音楽と判定されたものだけをスクロブルします（すべてスクロブルするオプションあり）。曲名・アーティスト・アルバムは YouTube Music の情報を使い、取得できない場合は動画タイトルを整形します（`アーティスト - 曲名 (Official Video)` → *アーティスト* / *曲名*）。
+
+オフラインでのスクロブルには対応していません。
 
 ### Last.FM
-Last.FMから独自のAPI KeyとAPI Secretを取得する必要があります。
-[https://www.last.fm/api](https://www.last.fm/api) にアクセスし、「Get an API account」から生成してください。
-取得した情報を、Last.FMのユーザー名とパスワードとともに設定メニューで入力してください。
-
-Last.FMのパスワードは、ローカルWindowsアカウントの[Windows資格情報マネージャー](https://support.microsoft.com/ja-jp/windows/%E8%B3%87%E6%A0%BC%E6%83%85%E5%A0%B1%E3%83%9E%E3%83%8D%E3%83%BC%E3%82%B8%E3%83%A3%E3%83%BC%E3%81%AB%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%81%99%E3%82%8B-1b5c916a-6a16-889f-8581-fc16e8165ac0)に保存されます。
+https://www.last.fm/api の「Get an API Account」で API Key と API Secret を取得し、Last.FM のユーザー名・パスワードとともに設定に入力してください。パスワードは Windows 資格情報マネージャーに保存されます。
 
 ### ListenBrainz
-設定でユーザートークンを追加することで、ListenBrainzへのスクロブルが可能です。
+設定にユーザートークンを入力してください。
+
+## ビルド
+```
+dotnet build YTWin-RichPresence.sln -c Release
+```
+配布用ビルドを作る前に、Developer Portal で `YouTube`（任意で `YouTube Music` も）という名前のアプリケーションを作成し、その Application ID を `YTWin-RichPresence/Constants.cs` の `DefaultDiscordClientID` / `DefaultDiscordClientIDMusic` に入れてください。これが空のままだと、利用者が自分で ID を入力する必要があります。
+
+`Properties/Localisation.resx` を dotnet CLI だけで編集した場合は `GenerateLocalisation.ps1` を実行して Designer ファイルを再生成してください（Visual Studio なら自動で行われます）。
 
 ## バグ報告
-新しくIssueを作成する前に、同様の問題が既に報告されていないか確認してください。
-問題を報告する際は、関連するログファイル（`%localappdata%\AMWin-RichPresence` にあります）を添付してください。
+`%localappdata%\YTWin-RichPresence` にある `.log` ファイルを添付してください。どのメディアセッションを見つけ、どう動画を特定し、Discord に何を送ったかが記録されています。
 
-投稿前に、以下の項目を再確認してください：
-- 同様の問題が、オープンまたはクローズされたIssueに存在しないか。
-- Discordの設定でRich Presenceの表示が有効になっているか（設定 > アクティビティ設定 > アクティビティのプライバシー > アクティビティを共有）。
+投稿前に、Discord の設定でアクティビティの共有が有効になっているか（設定 > アクティビティのプライバシー > アクティビティステータスを共有）を確認してください。
