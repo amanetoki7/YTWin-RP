@@ -150,6 +150,7 @@ namespace YTWin_RichPresence {
             tracker = new YouTubeTracker(mediaSessionReader, extensionBridge, resolver, lrclibClient, OnPlaybackRefresh, logger) {
                 RequireYouTubeWindow = settings.RequireYouTubeWindow
             };
+            discordClient.Connected += tracker.RequestRefresh;
             _ = tracker.StartAsync();
         }
 

@@ -25,7 +25,17 @@ internal class YouTubeDiscordClient {
     volatile bool isConnected = false;
     DiscordClientType preferredClient;
     bool warnedMissingId = false;
+    // What Discord is showing, as far as we know: the key of the last presence sent while connected, or null when cleared.
     string? lastPresenceKey = null;
+    // Discord (re)connected and may show anything (e.g. a presence restored by the library): send the current state, even "nothing".
+    volatile bool needsResync = false;
+    // The library re-sends its last presence when it reconnects by itself, which brought back songs that had
+    // stopped while Discord was closed. After a lost connection the client is replaced by a fresh one instead.
+    volatile bool connectionLost = false;
+    string? waitingKey = null;
+
+    /// <summary>Raised (on the RPC thread) once Discord is ready, so the caller can push the current state right away.</summary>
+    public event Action? Connected;
 
     public string ClientIdVideo { get; private set; }
     public string ClientIdMusic { get; private set; }
@@ -108,6 +118,7 @@ internal class YouTubeDiscordClient {
             }
             return;
         }
+        DropLostClient();
         EnsureClient(appId);
 
         var details = PadField(info.DisplayTitle) ?? "YouTube";
@@ -193,12 +204,18 @@ internal class YouTubeDiscordClient {
                 string.Join("|", buttons.Select(b => b.Url)));
             if (client == null) {
                 logger?.Log("Tried to set Discord RP, but no client");
-            } else if (key != lastPresenceKey) {
+            } else if (!isConnected) {
+                // Nothing is queued while Discord is away: updates queued then are replayed in a burst on connect,
+                // Discord rejects part of it and an old song can stay up. The state is sent once Discord is ready.
+                if (key != waitingKey) {
+                    waitingKey = key;
+                    logger?.Log($"Not connected to Discord; will show once connected: {details} / {state}");
+                }
+            } else if (key != lastPresenceKey || needsResync) {
+                needsResync = false;
                 client.SetPresence(rp);
                 lastPresenceKey = key;
-                // the IPC pipe can be down while the client keeps retrying, e.g. Discord restarting
-                var what = isConnected ? "Set" : "Queued (not connected to Discord)";
-                logger?.Log($"{what} Discord RP ({(isMusic ? "listening" : "watching")}): {details} / {state} [small: {(rp.Assets.SmallImageKey is { Length: > 0 } s ? s : "-")}]");
+                logger?.Log($"Set Discord RP ({(isMusic ? "listening" : "watching")}): {details} / {state} [small: {(rp.Assets.SmallImageKey is { Length: > 0 } s ? s : "-")}]");
             }
         } catch (Exception ex) {
             logger?.Log($"Couldn't set Discord RP:\n{ex}");
@@ -211,7 +228,13 @@ internal class YouTubeDiscordClient {
 
     /// <summary>Hides the presence but keeps the connection to Discord, so the next update shows up immediately.</summary>
     public void ClearPresence() {
-        if (client != null && lastPresenceKey != null) {
+        waitingKey = null;
+        DropLostClient();
+        if (client == null || !isConnected) {
+            return; // the right state is sent once Discord is ready
+        }
+        if (lastPresenceKey != null || needsResync) {
+            needsResync = false;
             try {
                 client.ClearPresence();
                 logger?.Log("Cleared Discord RP");
@@ -265,11 +288,27 @@ internal class YouTubeDiscordClient {
             client = new DiscordRpcClient(appId, pipe: pipe, logger: logger);
             client.OnReady += (_, _) => {
                 isConnected = true;
-                lastPresenceKey = null;   // re-send the current presence on the next refresh in case the queued one was lost
+                needsResync = true;
                 logger?.Log("Connected to Discord");
+                try {
+                    Connected?.Invoke();
+                } catch (Exception ex) {
+                    logger?.Log($"Discord connected handler failed: {ex.Message}");
+                }
             };
-            client.OnConnectionFailed += (_, _) => isConnected = false;
-            client.OnClose += (_, _) => isConnected = false;
+            client.OnConnectionFailed += (_, _) => {
+                if (isConnected) {
+                    connectionLost = true;
+                }
+                isConnected = false;
+            };
+            client.OnClose += (_, _) => {
+                if (isConnected) {
+                    connectionLost = true;
+                }
+                isConnected = false;
+                lastPresenceKey = null;
+            };
             client.Initialize();
             activeClientId = appId;
             lastPresenceKey = null;
@@ -281,8 +320,16 @@ internal class YouTubeDiscordClient {
         }
     }
 
+    private void DropLostClient() {
+        if (connectionLost && client != null) {
+            logger?.Log("Lost the connection to Discord; starting a new RPC client when needed");
+            DeinitClient();
+        }
+    }
+
     private void DeinitClient() {
         isConnected = false;
+        connectionLost = false;
         if (client != null) {
             try {
                 client.Deinitialize();
