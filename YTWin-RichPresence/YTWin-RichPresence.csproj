@@ -8,8 +8,8 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Resources\YTWinRP.ico</ApplicationIcon>
-    <AssemblyVersion>26.10.18</AssemblyVersion>
-    <FileVersion>26.10.18</FileVersion>
+    <AssemblyVersion>26.10.19</AssemblyVersion>
+    <FileVersion>26.10.19</FileVersion>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <SupportedOSPlatformVersion>10.0.26100.0</SupportedOSPlatformVersion>
     <ApplicationManifest>app.manifest</ApplicationManifest>
