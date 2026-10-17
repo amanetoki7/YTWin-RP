@@ -20,11 +20,11 @@ jobs:
       TAG: ${{ github.event.inputs.tag || github.ref_name }}
       PROJECT: YTWin-RichPresence/YTWin-RichPresence.csproj
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ github.event.inputs.tag || github.ref }}
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "10.0.x"
 
@@ -50,6 +50,8 @@ jobs:
           foreach ($arch in "x64", "arm64") {
             Compress-Archive -Force -Path "publish/$arch-WithRuntime/*" -DestinationPath "dist/YTWin-RichPresence-$env:TAG-$arch.zip"
             Compress-Archive -Force -Path "publish/$arch-NoRuntime/*" -DestinationPath "dist/YTWin-RichPresence-$env:TAG-$arch-NoRuntime.zip"
+            # the self-contained single-file exe on its own, for running without unpacking anything
+            Copy-Item "publish/$arch-WithRuntime/YTWin-RichPresence.exe" "dist/YTWin-RichPresence-$env:TAG-$arch.exe"
           }
           Get-ChildItem dist
 
@@ -60,8 +62,8 @@ jobs:
         run: |
           gh release view $env:TAG *> $null
           if ($LASTEXITCODE -eq 0) {
-            gh release upload $env:TAG (Get-ChildItem dist/*.zip).FullName --clobber
+            gh release upload $env:TAG (Get-ChildItem dist/*.zip, dist/*.exe).FullName --clobber
           } else {
-            gh release create $env:TAG (Get-ChildItem dist/*.zip).FullName --title $env:TAG --generate-notes
+            gh release create $env:TAG (Get-ChildItem dist/*.zip, dist/*.exe).FullName --title $env:TAG --generate-notes
           }
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
