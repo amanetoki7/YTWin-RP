@@ -1,62 +1,62 @@
 # YTWin-RP
-([日本語](README-JA.md))
+([English](README-EN.md))
 
-A Discord Rich Presence client for **YouTube and YouTube Music playing in your browser** on Windows.  
-Shows *Watching* for videos and *Listening to* (with song title, artist and album art) for music, and can scrobble music to Last.FM and ListenBrainz.
+**ブラウザーで再生している YouTube / YouTube Music** を Discord のリッチプレゼンスに表示する Windows 用クライアントです。  
+動画は「〜を視聴中」、音楽は「〜を再生中」（曲名・アーティスト・アルバムアート付き）として表示し、音楽は Last.FM / ListenBrainz へのスクロブルもできます。
 
-YTWin-RP is a fork of [AMWin-RP](https://github.com/PKBeam/AMWin-RP) (Apple Music) rebuilt for YouTube.
+YTWin-RP は [AMWin-RP](https://github.com/PKBeam/AMWin-RP)（Apple Music 用）のフォークを YouTube 向けに作り直したものです。
 
-## How it works (no browser extension needed)
+## 仕組み（ブラウザー拡張機能は不要）
 
-1. Browsers publish what they play to the Windows media controls (the same data the media overlay shows). YTWin-RP reads the title, channel, play/pause state and playback position from there.
-2. It confirms the session is YouTube from the browser window title (`Video title - YouTube - Google Chrome`) or, for background tabs, by searching YouTube for the title and channel. That search also yields the video ID, which gives the thumbnail and the "Watch on YouTube" button.
-3. **Video or music?** YTWin-RP asks YouTube Music whether it knows the same video ID. YouTube Music tags its catalogue (`MUSIC_VIDEO_TYPE_ATV` for songs, `OMV` for official music videos, `UGC` for user uploads in the Music category); videos outside the catalogue carry no tag and are treated as videos. For music, the song title, artist, album and square album art come from YouTube Music as well.
+1. ブラウザーは再生中のメディア情報を Windows のメディアコントロール（音量オーバーレイに出るもの）に渡しています。YTWin-RP はそこからタイトル・チャンネル名・再生/一時停止・再生位置を読み取ります。
+2. それが YouTube であることを、ブラウザーのウィンドウタイトル（`動画タイトル - YouTube - Google Chrome`）で確認します。バックグラウンドのタブの場合は、タイトルとチャンネル名で YouTube を検索して確認します。この検索で動画 ID も分かるので、サムネイルと「YouTube で見る」ボタンが付きます。
+3. **動画か音楽か？** 同じ動画 ID を YouTube Music に問い合わせます。YouTube Music はカタログ内の動画に種別を付けており（`MUSIC_VIDEO_TYPE_ATV` = 自動生成の曲、`OMV` = 公式ミュージックビデオ、`UGC` = 音楽カテゴリの一般投稿）、カタログ外の動画には種別が付きません。種別が付いていれば音楽、なければ動画として扱います。音楽の場合は曲名・アーティスト・アルバム名・正方形のアルバムアートも YouTube Music から取得します。
 
-Chrome, Edge, Firefox, Brave, Vivaldi, Opera and installed YouTube PWAs are recognised. Other apps publishing media (Spotify desktop, etc.) are ignored.
+Chrome / Edge / Firefox / Brave / Vivaldi / Opera と、インストールした YouTube PWA を認識します。それ以外のアプリ（Spotify デスクトップ版など）のメディア情報は無視します。
 
-### Optional browser extension
+### 任意：ブラウザー拡張機能
 
-An unpacked extension in the [`extension`](extension/) folder sends the exact video ID and playback position to the app over `127.0.0.1`. It is only needed for unlisted videos, YouTube in a background tab when the search fallback cannot identify it, or more precise timestamps. See [extension/README.md](extension/README.md).
+[`extension`](extension/) フォルダーの拡張機能（パッケージ化されていない拡張機能として読み込み）は、正確な動画 ID と再生位置を `127.0.0.1` 経由でアプリに送ります。必要なのは、限定公開の動画、検索で特定できないバックグラウンドのタブ、より正確なタイムスタンプが欲しい場合だけです。詳細は [extension/README.md](extension/README.md) を参照してください。
 
-## Installation
-YTWin-RP requires Windows 11 24H2 or later and a Discord desktop client.
+## インストール
+YTWin-RP には **Windows 11 24H2 以降** と Discord のデスクトップクライアントが必要です。
 
-Builds can be found [here](https://github.com/amanetoki7/YTWin-RP/releases). Pick x64 or ARM64; the `NoRuntime` variant needs the [.NET 10 desktop runtime](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) installed.
+ビルド済みファイルは [こちら](https://github.com/amanetoki7/YTWin-RP/releases)。x64 / ARM64 を選び、`NoRuntime` 版を使う場合は [.NET 10 デスクトップランタイム](https://dotnet.microsoft.com/ja-jp/download/dotnet/10.0) が必要です。
 
-### Discord application
+### Discord アプリケーション
 
-Discord shows the *name of the application* that sets the presence ("Watching **YouTube**", "Listening to **YouTube Music**"). Both applications are built into YTWin-RP, so there is nothing to set up. Thumbnails are sent as URLs; the small icon next to them is the application's icon from the Developer Portal (Rich Presence assets named `youtube`, `youtubemusic` and `pause` override it if uploaded). Builds without built-in IDs show Application ID fields in the settings instead.
+Discord は「〜を視聴中」「〜を再生中」の「〜」部分に、プレゼンスを設定した**アプリケーションの名前**（YouTube / YouTube Music）を表示します。両方のアプリケーションは YTWin-RP に組み込まれているため、利用者側の設定は不要です。サムネイルは URL で送り、その右下の小アイコンには Developer Portal で設定したアプリケーションのアイコンを使います（`youtube` / `youtubemusic` / `pause` という名前の Rich Presence アセットをアップロードするとそちらが優先されます）。組み込み ID のないビルドでは、代わりに設定画面に Application ID の入力欄が表示されます。
 
-## Usage
-- Open the .exe to start the app. It runs in the system tray; double-click the icon for settings, right-click → Exit to quit.
-- Play something on youtube.com or music.youtube.com in your browser. Rich Presence appears a few seconds later (while playing; "Show when paused" is optional).
-- The *Detection* page of the settings shows what is currently detected and how.
+## 使い方
+- `.exe` を起動するとシステムトレイに常駐します。アイコンをダブルクリックで設定、右クリック → 終了で終了します。
+- ブラウザーで youtube.com または music.youtube.com を再生すると、数秒後にリッチプレゼンスが表示されます（既定では再生中のみ。「一時停止中でも表示」は設定で変更できます）。
+- 設定の「検出」ページで、今なにをどう検出しているかを確認できます。
 
-Settings worth knowing:
-- **Detect music using YouTube Music** – turn off to show everything as a video.
-- **Only track YouTube while its tab is in the foreground** – stricter mode for people who also use other web players (e.g. Spotify Web) in the same browser.
-- **Show presence for videos / music** – hide one of the two.
+知っておくと便利な設定：
+- **YouTube Music を使って音楽を判定** – オフにするとすべて動画として表示します。
+- **YouTube のタブが前面にあるときだけ追跡する** – 同じブラウザーで他の Web プレイヤー（Spotify Web など）も使う人向けの厳格モード。
+- **動画／音楽のリッチプレゼンスを表示** – どちらかだけ表示することもできます。
 
-## Scrobbling
-Only items detected as music are scrobbled (there is an option to scrobble everything). Song, artist and album come from YouTube Music; otherwise the video title is cleaned up (`Artist - Title (Official Video)` → *Artist* / *Title*).
+## スクロブル
+既定では音楽と判定されたものだけをスクロブルします（すべてスクロブルするオプションあり）。曲名・アーティスト・アルバムは YouTube Music の情報を使い、取得できない場合は動画タイトルを整形します（`アーティスト - 曲名 (Official Video)` → *アーティスト* / *曲名*）。
 
-The scrobbler has no offline queue; listens while offline are lost.
+オフラインでのスクロブルには対応していません。
 
 ### Last.FM
-You need your own API key and secret from https://www.last.fm/api ("Get an API Account"). Enter them with your Last.FM username and password in the settings. The password is stored in the Windows Credential Manager.
+https://www.last.fm/api の「Get an API Account」で API Key と API Secret を取得し、Last.FM のユーザー名・パスワードとともに設定に入力してください。パスワードは Windows 資格情報マネージャーに保存されます。
 
 ### ListenBrainz
-Enter your user token in the settings.
+設定にユーザートークンを入力してください。
 
-## Building
+## ビルド
 ```
 dotnet build YTWin-RichPresence.sln -c Release
 ```
-Before publishing a build, create a Discord application named `YouTube` (and optionally `YouTube Music`) in the Developer Portal and put the Application IDs into `DefaultDiscordClientID` / `DefaultDiscordClientIDMusic` in `YTWin-RichPresence/Constants.cs`. Without them, users have to enter an ID themselves.
+配布用ビルドを作る前に、Developer Portal で `YouTube`（任意で `YouTube Music` も）という名前のアプリケーションを作成し、その Application ID を `YTWin-RichPresence/Constants.cs` の `DefaultDiscordClientID` / `DefaultDiscordClientIDMusic` に入れてください。これが空のままだと、利用者が自分で ID を入力する必要があります。
 
-After editing `Properties/Localisation.resx` with the dotnet CLI only, run `GenerateLocalisation.ps1` to regenerate the designer file (Visual Studio does this automatically).
+`Properties/Localisation.resx` を dotnet CLI だけで編集した場合は `GenerateLocalisation.ps1` を実行して Designer ファイルを再生成してください（Visual Studio なら自動で行われます）。
 
-## Reporting bugs
-Attach the relevant `.log` files from `%localappdata%\YTWin-RichPresence`. They show which media sessions were seen, how the video was identified and what was sent to Discord.
+## バグ報告
+`%localappdata%\YTWin-RichPresence` にある `.log` ファイルを添付してください。どのメディアセッションを見つけ、どう動画を特定し、Discord に何を送ったかが記録されています。
 
-Before posting, please check that Activity Status is enabled in Discord (Settings > Activity Privacy > Share your activity status).
+投稿前に、Discord の設定でアクティビティの共有が有効になっているか（設定 > アクティビティのプライバシー > アクティビティステータスを共有）を確認してください。
