@@ -23,7 +23,7 @@ namespace YTWin_RichPresence {
         protected int elapsedSeconds;
         protected string? lastSongID;
         protected bool hasScrobbled;
-        protected bool nowPlayingSent;
+        protected DateTime? nowPlayingSentUtc;
         protected double lastSongProgress;
         protected Logger? logger;
         protected string serviceName;
@@ -56,7 +56,13 @@ namespace YTWin_RichPresence {
 
         public abstract Task<bool> UpdateCredsAsync(C credentials);
 
-        protected abstract Task<bool> UpdateNowPlaying(string artist, string album, string song);
+        protected abstract Task<bool> UpdateNowPlaying(string artist, string album, string song, int? durationSeconds);
+
+        // Last.fm drops "now playing" after a while (about the track length), so it is sent again on every repeat
+        // and periodically while playback continues, e.g. after a long pause or a looping video.
+        private static readonly TimeSpan NowPlayingResendInterval = TimeSpan.FromMinutes(2);
+
+        private bool NowPlayingDue => nowPlayingSentUtc == null || DateTime.UtcNow - nowPlayingSentUtc.Value >= NowPlayingResendInterval;
 
         protected abstract Task ScrobbleSong(string artist, string album, string song);
 
@@ -104,7 +110,7 @@ namespace YTWin_RichPresence {
                     elapsedSeconds = 0;
                     scrobbleInProgress = false;
                     hasScrobbled = false;
-                    nowPlayingSent = false;
+                    nowPlayingSentUtc = null;
                     logger?.Log($"[{serviceName} scrobbler] New Song: {lastSongID}");
                 } else {
                     elapsedSeconds += Constants.RefreshPeriod;
@@ -112,6 +118,7 @@ namespace YTWin_RichPresence {
                     if (hasScrobbled && IsRepeating(info)) {
                         hasScrobbled = false;
                         elapsedSeconds = 0;
+                        nowPlayingSentUtc = null;
                         logger?.Log($"[{serviceName} scrobbler] Repeating Song: {lastSongID}");
                     }
 
@@ -129,10 +136,14 @@ namespace YTWin_RichPresence {
                     lastSongProgress = info.CurrentTime ?? 0.0;
                 }
 
-                if (!nowPlayingSent) {
-                    nowPlayingSent = await UpdateNowPlaying(artist, album, song);
-                    if (nowPlayingSent) {
+                if (NowPlayingDue) {
+                    // set before the request so the next refresh does not send it again while this one is in flight
+                    var previous = nowPlayingSentUtc;
+                    nowPlayingSentUtc = DateTime.UtcNow;
+                    if (await UpdateNowPlaying(artist, album, song, info.DurationSeconds)) {
                         logger?.Log($"[{serviceName} scrobbler] Updated now playing: {artist} - {song}");
+                    } else {
+                        nowPlayingSentUtc = previous;
                     }
                 }
             } catch (Exception ex) {
@@ -177,16 +188,25 @@ namespace YTWin_RichPresence {
                 return;
             }
             var scrobble = new Scrobble(artist, album, song, DateTime.UtcNow);
-            await lastFmScrobbler.ScrobbleAsync(scrobble);
+            var response = await lastFmScrobbler.ScrobbleAsync(scrobble);
+            if (!response.Success) {
+                logger?.Log($"[Last.FM scrobbler] Scrobble was not accepted: {response.Status}");
+            }
         }
 
-        protected async override Task<bool> UpdateNowPlaying(string artist, string album, string song) {
+        protected async override Task<bool> UpdateNowPlaying(string artist, string album, string song, int? durationSeconds) {
             if (trackApi == null || lastfmAuth?.Authenticated != true) {
                 return false;
             }
             var scrobble = new Scrobble(artist, album, song, DateTime.UtcNow);
-            await trackApi.UpdateNowPlayingAsync(scrobble);
-            return true;
+            if (durationSeconds is > 0) {
+                scrobble.Duration = TimeSpan.FromSeconds(durationSeconds.Value);
+            }
+            var response = await trackApi.UpdateNowPlayingAsync(scrobble);
+            if (!response.Success) {
+                logger?.Log($"[Last.FM scrobbler] Now playing was not accepted: {response.Status}");
+            }
+            return response.Success;
         }
     }
 
@@ -226,7 +246,7 @@ namespace YTWin_RichPresence {
             await listenBrainzClient.SubmitSingleListenAsync(song, artist, album);
         }
 
-        protected async override Task<bool> UpdateNowPlaying(string artist, string album, string song) {
+        protected async override Task<bool> UpdateNowPlaying(string artist, string album, string song, int? durationSeconds) {
             if (string.IsNullOrEmpty(listenBrainzClient?.UserToken)) {
                 return false;
             }
