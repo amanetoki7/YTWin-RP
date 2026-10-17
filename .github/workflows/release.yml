@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to build and release (e.g. v26.10.17)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+      PROJECT: YTWin-RichPresence/YTWin-RichPresence.csproj
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Publish
+        shell: pwsh
+        run: |
+          # "v26.10.17" -> FileVersion 26.10.17; the app compares this against the latest release name
+          $version = $env:TAG.TrimStart('v')
+          $common = @("-c", "Release", "-p:FileVersion=$version", "-p:AssemblyVersion=$version", "-p:PublishSingleFile=true")
+          foreach ($arch in "x64", "arm64") {
+            dotnet publish $env:PROJECT @common -r "win-$arch" --self-contained false -o "publish/$arch-NoRuntime"
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            dotnet publish $env:PROJECT @common -r "win-$arch" --self-contained true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o "publish/$arch-WithRuntime"
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+
+      - name: Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          # the exe plus the optional browser extension folder; debug symbols stay out
+          Get-ChildItem publish -Recurse -Filter *.pdb | Remove-Item
+          foreach ($arch in "x64", "arm64") {
+            Compress-Archive -Force -Path "publish/$arch-WithRuntime/*" -DestinationPath "dist/YTWin-RichPresence-$env:TAG-$arch.zip"
+            Compress-Archive -Force -Path "publish/$arch-NoRuntime/*" -DestinationPath "dist/YTWin-RichPresence-$env:TAG-$arch-NoRuntime.zip"
+          }
+          Get-ChildItem dist
+
+      - name: Create GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view $env:TAG *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $env:TAG (Get-ChildItem dist/*.zip).FullName --clobber
+          } else {
+            gh release create $env:TAG (Get-ChildItem dist/*.zip).FullName --title $env:TAG --generate-notes
+          }
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
