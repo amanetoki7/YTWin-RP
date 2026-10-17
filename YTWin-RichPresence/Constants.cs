@@ -29,6 +29,8 @@ namespace YTWin_RichPresence {
         public static int    RefreshPeriod                  = 5;     // seconds
         public static int    NumFailedSearchesBeforeAbandon = 3;     // attempts per video before we stop looking it up
         public static int    ExtensionReportMaxAge          = 10;    // seconds before a report from the browser extension is considered stale
+        public static int    MediaSessionReadTimeout        = 3;     // seconds to wait for Windows to answer before treating it as "nothing playing"
+        public static int    MediaSessionOverrunGrace       = 60;    // seconds a "playing" session may run past its duration before it is considered stale
         public static int    DefaultExtensionBridgePort     = 48271;
         public static string ApplicationStylisedName        = "YTWin-RichPresence";
         public static string LastFMCredentialTargetName     = "YTWin-RP Last FM Password";

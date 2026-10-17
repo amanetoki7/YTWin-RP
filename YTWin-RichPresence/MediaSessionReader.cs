@@ -16,8 +16,10 @@ namespace YTWin_RichPresence {
         public double? PositionSeconds;
         public double? DurationSeconds;
         public bool IsCurrent;
+        /// <summary>Reports "playing" although it should have finished long ago: the browser stopped updating it.</summary>
+        public bool IsStale;
 
-        public bool IsPlaying => Status == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing;
+        public bool IsPlaying => Status == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing && !IsStale;
         public bool IsPaused => Status == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Paused;
         public bool IsActive => IsPlaying || IsPaused;
 
@@ -34,6 +36,9 @@ namespace YTWin_RichPresence {
         private readonly Logger? logger;
         private GlobalSystemMediaTransportControlsSessionManager? manager;
         private GlobalSystemMediaTransportControlsSession? tracked;
+        private Task<List<MediaSessionSnapshot>>? pendingRead;
+        private bool loggedReadTimeout;
+        private readonly HashSet<string> loggedStale = new();
 
         private readonly TypedEventHandler<GlobalSystemMediaTransportControlsSessionManager, SessionsChangedEventArgs> sessionsChangedHandler;
         private readonly TypedEventHandler<GlobalSystemMediaTransportControlsSessionManager, CurrentSessionChangedEventArgs> currentSessionChangedHandler;
@@ -106,7 +111,37 @@ namespace YTWin_RichPresence {
             }
         }
 
+        /// <summary>
+        /// The WinRT calls below go to the browser process and can stop answering (e.g. while the browser hangs).
+        /// Never wait on them for more than a few seconds, otherwise the tracker stops refreshing and the last
+        /// presence stays on Discord forever; report "nothing playing" instead until Windows answers again.
+        /// </summary>
         public async Task<List<MediaSessionSnapshot>> GetSnapshotsAsync() {
+            Task<List<MediaSessionSnapshot>> read;
+            lock (this) {
+                // a read that is still hanging is waited on again rather than piling up new ones behind it
+                if (pendingRead == null || pendingRead.IsCompleted) {
+                    pendingRead = Task.Run(ReadSnapshotsAsync);
+                }
+                read = pendingRead;
+            }
+            try {
+                var result = await read.WaitAsync(TimeSpan.FromSeconds(Constants.MediaSessionReadTimeout)).ConfigureAwait(false);
+                if (loggedReadTimeout) {
+                    logger?.Log("Windows media sessions are answering again");
+                    loggedReadTimeout = false;
+                }
+                return result;
+            } catch (TimeoutException) {
+                if (!loggedReadTimeout) {
+                    logger?.Log($"Windows media sessions did not answer within {Constants.MediaSessionReadTimeout}s; treating as nothing playing");
+                    loggedReadTimeout = true;
+                }
+                return new List<MediaSessionSnapshot>();
+            }
+        }
+
+        private async Task<List<MediaSessionSnapshot>> ReadSnapshotsAsync() {
             var result = new List<MediaSessionSnapshot>();
             if (manager == null) {
                 return result;
@@ -158,6 +193,15 @@ namespace YTWin_RichPresence {
                         }
                         var seconds = Math.Max(0, position.TotalSeconds);
                         if (snapshot.DurationSeconds != null) {
+                            // the browser reports a jump whenever playback ends or loops, so running far past the end
+                            // means the "playing" state is left over from a session that is no longer updated
+                            if (snapshot.Status == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing
+                                && seconds > snapshot.DurationSeconds.Value + Constants.MediaSessionOverrunGrace) {
+                                snapshot.IsStale = true;
+                                if (loggedStale.Add($"{snapshot.AppUserModelId}|{snapshot.Title}")) {
+                                    logger?.Log($"Ignoring stale media session (still \"playing\" {seconds - snapshot.DurationSeconds.Value:F0}s past its end): {snapshot}");
+                                }
+                            }
                             seconds = Math.Min(seconds, snapshot.DurationSeconds.Value);
                         }
                         snapshot.PositionSeconds = seconds;

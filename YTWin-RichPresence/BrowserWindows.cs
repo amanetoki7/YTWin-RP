@@ -67,23 +67,21 @@ namespace YTWin_RichPresence {
         private static extern bool IsWindowVisible(IntPtr hWnd);
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        private static extern int GetWindowTextLengthW(IntPtr hWnd);
-
-        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         private static extern int GetWindowTextW(IntPtr hWnd, StringBuilder text, int maxCount);
+
+        // GetWindowTextLength sends WM_GETTEXTLENGTH and blocks while the browser window is not responding;
+        // GetWindowText reads another process's window title without asking the window.
+        private const int MaxTitleLength = 1024;
 
         public static List<(int pid, string title)> GetVisibleWindowTitles() {
             var titles = new List<(int, string)>();
+            var sb = new StringBuilder(MaxTitleLength);
             EnumWindows((hWnd, _) => {
                 if (!IsWindowVisible(hWnd)) {
                     return true;
                 }
-                var length = GetWindowTextLengthW(hWnd);
-                if (length <= 0) {
-                    return true;
-                }
-                var sb = new StringBuilder(length + 1);
-                if (GetWindowTextW(hWnd, sb, sb.Capacity) > 0) {
+                sb.Clear();
+                if (GetWindowTextW(hWnd, sb, MaxTitleLength) > 0) {
                     GetWindowThreadProcessId(hWnd, out var pid);
                     titles.Add(((int)pid, sb.ToString()));
                 }
