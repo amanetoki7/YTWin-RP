@@ -33,6 +33,13 @@ namespace YTWin_RichPresence {
             return sb.ToString();
         }
 
+        private static readonly Regex JapaneseChars = new(@"[぀-ヿ㐀-䶿一-鿿豈-﫿ｦ-ﾟ]", RegexOptions.Compiled);
+
+        /// <summary>True when the text contains kana or kanji.</summary>
+        public static bool HasJapanese(string? s) {
+            return s != null && JapaneseChars.IsMatch(s);
+        }
+
         public static bool TitleEquals(string? a, string? b) {
             if (string.IsNullOrWhiteSpace(a) || string.IsNullOrWhiteSpace(b)) {
                 return false;

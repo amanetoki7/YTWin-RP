@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace YTWin_RichPresence {
@@ -24,6 +25,7 @@ namespace YTWin_RichPresence {
 
         private static readonly Regex DashSplit = new(@"^(?<a>.+?)\s+[-–—]\s+(?<t>.+)$", RegexOptions.Compiled);
         private static readonly Regex JapaneseQuoteSplit = new(@"^(?<a>[^「『]+?)\s*[「『](?<t>[^」』]+)[」』]\s*$", RegexOptions.Compiled);
+        private static readonly Regex SlashSplit = new(@"^(?<t>.+?)\s*[/／]\s*(?<a>[^/／]+)$", RegexOptions.Compiled);
 
         public static string Clean(string title) {
             if (string.IsNullOrWhiteSpace(title)) {
@@ -54,6 +56,26 @@ namespace YTWin_RichPresence {
                 return (m.Groups["a"].Value.Trim(), m.Groups["t"].Value.Trim());
             }
             return (null, cleanedTitle);
+        }
+
+        /// <summary>
+        /// The Japanese song title inside a video title such as "Artist「曲名」MV", "Artist - 曲名" or "曲名 / Artist",
+        /// or null when the title has no such shape, the artist part is not one of <paramref name="artists"/>,
+        /// or the song part is not Japanese.
+        /// </summary>
+        public static string? JapaneseSongTitle(string videoTitle, params string?[] artists) {
+            var cleaned = Clean(videoTitle);
+            var (artist, title) = SplitArtistTitle(cleaned);
+            if (artist == null) {
+                var m = SlashSplit.Match(cleaned);
+                if (m.Success) {
+                    (artist, title) = (m.Groups["a"].Value.Trim(), m.Groups["t"].Value.Trim());
+                }
+            }
+            if (artist == null || !TextMatch.HasJapanese(title) || !artists.Any(a => TextMatch.ArtistMatches(artist, a))) {
+                return null;
+            }
+            return title;
         }
     }
 }

@@ -41,7 +41,7 @@ namespace YTWin_RichPresence {
         private static readonly TimeSpan NegativeTtl = TimeSpan.FromMinutes(10);
         private static readonly TimeSpan PartialTtl = TimeSpan.FromMinutes(2);
         private const int MaxPersistedEntries = 500;
-        private const int CacheVersion = 2;   // bump when the shape or meaning of ResolvedMedia changes
+        private const int CacheVersion = 3;   // bump when the shape or meaning of ResolvedMedia changes
 
         private sealed class CacheFile {
             public int Version { get; set; }
@@ -178,6 +178,11 @@ namespace YTWin_RichPresence {
                     songTitle = d.Title;
                     // the channel/author name is canonical (and what scrobblers expect); the "next" byline is localised
                     songArtist = !string.IsNullOrWhiteSpace(d.Author) ? d.Author : next?.Artist;
+                    // YouTube Music sometimes lists Japanese songs under an English title ("School girl diary")
+                    // while the video title keeps the original ("真壁寂室「女學生日誌」Official Music Video")
+                    if (!TextMatch.HasJapanese(songTitle) && d.YouTubeTitle != null) {
+                        songTitle = TitleCleaner.JapaneseSongTitle(d.YouTubeTitle, songArtist, d.PageOwnerName, d.Author) ?? songTitle;
+                    }
                 } else {
                     var (artist, title) = TitleCleaner.SplitArtistTitle(TitleCleaner.Clean(d.Title));
                     songTitle = title;
